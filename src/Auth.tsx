@@ -7,24 +7,46 @@ export default function Auth({ setUser }: any) {
   const [isSignup, setIsSignup] = useState(false);
 
   const handleAuth = async () => {
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
+
     if (isSignup) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
-      if (!error) setUser(data.user);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      // If email confirmation is ON, user may be null
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        alert("Check your email to confirm signup");
+      }
+
     } else {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (!error) setUser(data.user);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      setUser(data.user);
     }
   };
 
   return (
     <div className="auth-page">
-
       <div className="auth-card">
 
         <h1>{isSignup ? "Create account" : "Welcome back"}</h1>
@@ -61,7 +83,6 @@ export default function Auth({ setUser }: any) {
         </p>
 
       </div>
-
     </div>
   );
 }

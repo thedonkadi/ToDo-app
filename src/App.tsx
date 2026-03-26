@@ -7,9 +7,12 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
-    });
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user ?? null);
+    };
+
+    getSession();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {

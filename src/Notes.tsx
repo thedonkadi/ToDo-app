@@ -7,38 +7,67 @@ export default function Tasks({ user, setUser }: any) {
   const [deadline, setDeadline] = useState("");
 
   const fetchTasks = async () => {
-    const { data } = await supabase
+    if (!user) return;
+
+    const { data, error } = await supabase
       .from("tasks")
       .select("*")
+      .eq("user_id", user.id) // ✅ SECURITY FIX
       .order("deadline", { ascending: true });
+
+    if (error) {
+      console.error("Fetch error:", error.message);
+      return;
+    }
 
     setTasks(data || []);
   };
 
   const addTask = async () => {
-    if (!title) return;
+    if (!title || !user) return;
 
-    await supabase.from("tasks").insert([
-      {
-        title,
-        deadline: deadline || null,
-        user_id: user.id,
-      },
-    ]);
+    const { data, error } = await supabase
+      .from("tasks")
+      .insert([
+        {
+          title,
+          deadline: deadline || null,
+          user_id: user.id,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Insert error:", error.message);
+      return;
+    }
+
+    // ✅ Optimistic update (no refetch)
+    setTasks((prev) => [...prev, data]);
 
     setTitle("");
     setDeadline("");
-    fetchTasks();
   };
 
   const deleteTask = async (id: string) => {
-    await supabase.from("tasks").delete().eq("id", id);
-    fetchTasks();
+    const { error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Delete error:", error.message);
+      return;
+    }
+
+    // ✅ Optimistic update
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [user]); // ✅ important
 
   return (
     <div className="app">
@@ -58,7 +87,6 @@ export default function Tasks({ user, setUser }: any) {
           </div>
         </div>
 
-        {/* QUOTE */}
         <div className="quote-box">
           <p>"Small steps every day build unstoppable momentum."</p>
         </div>
@@ -84,7 +112,6 @@ export default function Tasks({ user, setUser }: any) {
 
         <h1>My Tasks</h1>
 
-        {/* CHATGPT STYLE INPUT */}
         <div className="chat-input">
 
           <input
@@ -104,7 +131,6 @@ export default function Tasks({ user, setUser }: any) {
 
         </div>
 
-        {/* TASK LIST */}
         <div className="task-list">
           {tasks.map((task) => (
             <div key={task.id} className="task-card">
