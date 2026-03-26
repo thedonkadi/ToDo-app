@@ -189,15 +189,63 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
   background: #0b0f19;
 }
 
-/* CARD */
+/* BACKGROUND IMAGE + LIGHTING */
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08), transparent 20%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.06), transparent 25%),
+    linear-gradient(rgba(10,10,15,0.7), rgba(10,10,15,0.9)),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475") center/cover no-repeat;
+
+  z-index: 0;
+}
+
+/* FLOATING LIGHT EFFECT */
+.auth-page::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+  top: 10%;
+  left: 10%;
+  filter: blur(40px);
+  animation: float 8s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(30px); }
+}
+
+/* LOGIN CARD */
 .auth-card {
+  position: relative;
+  z-index: 1;
+
   width: 340px;
   padding: 30px;
-  background: rgba(15, 23, 42, 0.85);
   border-radius: 16px;
+
+  background: rgba(20, 20, 25, 0.6);
+  backdrop-filter: blur(15px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 0 30px rgba(0,0,0,0.6),
+    0 0 10px rgba(255,255,255,0.05);
+
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -208,6 +256,7 @@ body::before {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
+  color: white;
 }
 
 .auth-sub {
@@ -225,30 +274,47 @@ body::before {
 .auth-inputs input {
   padding: 10px;
   border-radius: 8px;
-  border: none;
-  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(30, 41, 59, 0.6);
   color: white;
   outline: none;
+
+  transition: 0.3s;
 }
 
+/* INPUT GLOW */
 .auth-inputs input:focus {
-  background: #334155;
+  border: 1px solid #3b82f6;
+
+  box-shadow:
+    0 0 8px #3b82f6,
+    0 0 20px rgba(59,130,246,0.5);
+
+  background: rgba(30, 41, 59, 0.9);
 }
 
 /* BUTTON */
 .auth-btn {
   margin-top: 10px;
   padding: 10px;
-  background: #3b82f6;
-  border: none;
   border-radius: 8px;
+  border: none;
+
+  background: #3b82f6;
   color: white;
+
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s;
 }
 
+/* BUTTON GLOW */
 .auth-btn:hover {
-  background: #2563eb;
+  box-shadow:
+    0 0 10px #3b82f6,
+    0 0 25px rgba(59,130,246,0.6);
+
+  transform: translateY(-1px);
 }
 
 /* SWITCH TEXT */
@@ -261,37 +327,4 @@ body::before {
 .switch span {
   color: #3b82f6;
   cursor: pointer;
-}
-
-.auth-page {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  position: relative;
-  overflow: hidden;
-}
-
-.auth-page::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background:
-    linear-gradient(rgba(10,10,15,0.6), rgba(10,10,15,0.85)),
-    url("https://images.unsplash.com/photo-1518770660439-4636190af475") center/cover no-repeat;
-
-  z-index: 0;
-}
-
-.auth-card {
-  position: relative;
-  z-index: 1;
-}
-
-.auth-card {
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }

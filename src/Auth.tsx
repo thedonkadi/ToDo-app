@@ -49,7 +49,7 @@ export default function Auth({ setUser }: any) {
     <div className="auth-page">
       <div className="auth-card">
 
-        <h1>{isSignup ? "Create account" : "Welcome back"}</h1>
+        <h1>{isSignup ? "Create account" : "Welcome"}</h1>
 
         <p className="auth-sub">
           {isSignup
