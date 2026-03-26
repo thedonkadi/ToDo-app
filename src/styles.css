@@ -262,3 +262,36 @@ body::before {
   color: #3b82f6;
   cursor: pointer;
 }
+
+.auth-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(rgba(10,10,15,0.6), rgba(10,10,15,0.85)),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475") center/cover no-repeat;
+
+  z-index: 0;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card {
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
